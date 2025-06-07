@@ -31,3 +31,27 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         welcome_text, parse_mode="HTML", reply_markup=reply_markup
     )
+
+
+async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Обработка нажатий кнопок главного меню"""
+    query = update.callback_query
+    await query.answer()
+
+
+async def start_menu_again(query):
+    """Возврат в главное меню"""
+    keyboard = [
+        [InlineKeyboardButton("🎲 Рандомный факт", callback_data="random_fact")],
+        [InlineKeyboardButton("🤖 ChatGPT", callback_data="gpt_interface")],
+        [InlineKeyboardButton("👥 Диалог с личностью", callback_data="talk_interface")],
+        [InlineKeyboardButton("🧠 Квиз", callback_data="quiz_interface")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await query.edit_message_text(
+        "🎉 <b>Добро пожаловать в ChatGPT бота!</b>\n\n"
+        "Выберите одну из доступных функций:",
+        parse_mode="HTML",
+        reply_markup=reply_markup,
+    )
