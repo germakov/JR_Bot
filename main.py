@@ -10,7 +10,7 @@ from telegram.ext import (
 )
 
 from config import TG_BOT_TOKEN
-from handlers import basic, random_fact
+from handlers import basic
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -23,10 +23,10 @@ def main():
     try:
         application = Application.builder().token(TG_BOT_TOKEN).build()
         application.add_handler(CommandHandler("start", basic.start))
-        application.add_handler(CommandHandler("random", random_fact.random_fact))
-        application.add_handler(
-            CallbackQueryHandler(random_fact.random_fact_callback, pattern="^random_")
-        )
+        # application.add_handler(CommandHandler("random", random_fact.random_fact))
+        # application.add_handler(
+        #     CallbackQueryHandler(random_fact.random_fact_callback, pattern="^random_")
+        # )
         application.add_handler(CallbackQueryHandler(basic.menu_callback))
         application.add_handler(CallbackQueryHandler(button))
 
