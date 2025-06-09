@@ -9,6 +9,7 @@ from telegram.ext import (
     filters,
 )
 
+from config import CHATGPT_TOKEN
 from config import TG_BOT_TOKEN
 from handlers import basic
 
@@ -28,7 +29,7 @@ def main():
         #     CallbackQueryHandler(random_fact.random_fact_callback, pattern="^random_")
         # )
         application.add_handler(CallbackQueryHandler(basic.menu_callback))
-        application.add_handler(CallbackQueryHandler(button))
+        # application.add_handler(CallbackQueryHandler(button))
 
         logger.info("Бот запущен...")
 
