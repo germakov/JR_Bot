@@ -1,15 +1,9 @@
 import logging
 
-from telegram.ext import (
-    Application,
-    CallbackQueryHandler,
-    CommandHandler,
-    ConversationHandler,
-    MessageHandler,
-    filters,
-)
+from telegram.ext import (Application, CallbackQueryHandler, CommandHandler,
+                          ConversationHandler, MessageHandler, filters)
 
-from config import TG_BOT_TOKEN
+from config import CHATGPT_TOKEN, TG_BOT_TOKEN
 from handlers import basic
 
 logging.basicConfig(
@@ -28,7 +22,7 @@ def main():
         #     CallbackQueryHandler(random_fact.random_fact_callback, pattern="^random_")
         # )
         application.add_handler(CallbackQueryHandler(basic.menu_callback))
-        application.add_handler(CallbackQueryHandler(button))
+        # application.add_handler(CallbackQueryHandler(button))
 
         logger.info("Бот запущен...")
 
@@ -36,5 +30,6 @@ def main():
     except Exception as e:
         logger.error(f"Ошибка при запуске {e}")
 
-    if __name__ == "__main__":
-        main()
+
+if __name__ == "__main__":
+    main()
