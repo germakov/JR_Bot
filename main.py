@@ -1,3 +1,5 @@
+"""Здесь происходит создание и запуск бота и его основных функций"""
+
 import logging
 from warnings import filterwarnings
 
@@ -26,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     try:
+        """Создаем телеграм бота"""
         application = Application.builder().token(TG_BOT_TOKEN).build()
 
         application.add_handler(CommandHandler("start", basic.start))
