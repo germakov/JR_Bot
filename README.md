@@ -16,25 +16,25 @@
 ### Для запуска бота необходимо:
 
 - Создать виртуальное окружение в папке с ботом.
-'''python
+```python
 python -m venv venv
 
-'''
+```
 
 - Запустить виртуальное окружение.
-'''python
+```python
 source venv/bin/python
 
-'''
+```
 
 - Установить необходимые библиотеки командой:
-'''python
+```python
 pip install -r requerements.py
 
-'''
+```
 
 - Зарустить бота командой:
-'''python
+```python
 python main.py
 
-'''
+```
