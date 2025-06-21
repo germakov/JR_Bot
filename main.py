@@ -3,18 +3,13 @@
 import logging
 from warnings import filterwarnings
 
-from telegram.ext import (
-    Application,
-    CallbackQueryHandler,
-    CommandHandler,
-    ConversationHandler,
-    MessageHandler,
-    filters,
-)
+from telegram.ext import (Application, CallbackQueryHandler, CommandHandler,
+                          ConversationHandler, MessageHandler, filters)
 from telegram.warnings import PTBUserWarning
 
 from config import TG_BOT_TOKEN
-from handlers import basic, chatgpt_interface, personality_chat, quiz, random_fact
+from handlers import (basic, chatgpt_interface, personality_chat, quiz,
+                      random_fact)
 
 filterwarnings(
     action="ignore", message=r".*CallbackQueryHandler", category=PTBUserWarning
@@ -27,8 +22,8 @@ logger = logging.getLogger(__name__)
 
 
 def main():
+    """Создаем телеграм бота и обрабатываем команды."""
     try:
-        """Создаем телеграм бота"""
         application = Application.builder().token(TG_BOT_TOKEN).build()
 
         application.add_handler(CommandHandler("start", basic.start))
@@ -59,7 +54,6 @@ def main():
                     basic.menu_callback, pattern="^(gpt_finish|main_menu)$"
                 ),
             ],
-            # per_message=True,
         )
 
         personality_conversation = ConversationHandler(
