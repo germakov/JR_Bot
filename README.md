@@ -15,6 +15,17 @@
 
 ### Для запуска бота необходимо:
 
+- Создать клон бота командой:
+```python
+git clone https://github.com/germakov/JR_Bot.git
+```
+
+- Перейти в созданную программой git директорию.
+
+```python
+cd JR_Bot
+```
+
 - Создать виртуальное окружение в папке с ботом.
 ```python
 python -m venv venv
@@ -33,7 +44,7 @@ pip install -r requerements.py
 
 ```
 
-- Зарустить бота командой:
+- Запустить бота командой:
 ```python
 python main.py
 
