@@ -1,3 +1,5 @@
+"""Содаем клиента Chat GPT для функций"""
+
 import logging
 
 from openai import AsyncOpenAI

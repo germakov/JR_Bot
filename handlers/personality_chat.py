@@ -1,10 +1,14 @@
+"""Имитируем разговор с легендарной личностью на выбор."""
+
 import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes
-from services.openai_client import get_personality_response
-from data.personalities import get_personality_keyboard, get_personality_data
 import os
+
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import ContextTypes
+
+from data.personalities import get_personality_data, get_personality_keyboard
 from handlers.basic import start
+from services.openai_client import get_personality_response
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +21,7 @@ async def talk_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def talk_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Запускаем разговор с личностью."""
     try:
         image_path = "data/images/personality.jpeg"
         message_text = (
@@ -37,36 +42,32 @@ async def talk_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if os.path.exists(image_path):
                 # Удаляем старое сообщение и отправляем новое с фото
                 await update.callback_query.message.delete()
-                with open(image_path, 'rb') as photo:
+                with open(image_path, "rb") as photo:
                     await context.bot.send_photo(
                         chat_id=update.callback_query.message.chat_id,
                         photo=photo,
                         caption=message_text,
-                        parse_mode='HTML',
-                        reply_markup=keyboard
+                        parse_mode="HTML",
+                        reply_markup=keyboard,
                     )
             else:
                 await update.callback_query.edit_message_text(
-                    message_text,
-                    parse_mode='HTML',
-                    reply_markup=keyboard
+                    message_text, parse_mode="HTML", reply_markup=keyboard
                 )
             await update.callback_query.answer()
         else:
             # Обычное сообщение (команда /talk)
             if os.path.exists(image_path):
-                with open(image_path, 'rb') as photo:
+                with open(image_path, "rb") as photo:
                     await update.message.reply_photo(
                         photo=photo,
                         caption=message_text,
-                        parse_mode='HTML',
-                        reply_markup=keyboard
+                        parse_mode="HTML",
+                        reply_markup=keyboard,
                     )
             else:
                 await update.message.reply_text(
-                    message_text,
-                    parse_mode='HTML',
-                    reply_markup=keyboard
+                    message_text, parse_mode="HTML", reply_markup=keyboard
                 )
 
         return SELECTING_PERSONALITY
@@ -81,6 +82,7 @@ async def talk_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(error_text)
 
         return -1
+
 
 async def personality_selected(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработка выбора личности"""
@@ -101,8 +103,8 @@ async def personality_selected(update: Update, context: ContextTypes.DEFAULT_TYP
             return -1
 
         # Сохраняем выбранную личность в контексте
-        context.user_data['current_personality'] = personality_key
-        context.user_data['personality_data'] = personality
+        context.user_data["current_personality"] = personality_key
+        context.user_data["personality_data"] = personality
 
         message_text = (
             f"{personality['emoji']} <b>Диалог с {personality['name']}</b>\n\n"
@@ -114,16 +116,10 @@ async def personality_selected(update: Update, context: ContextTypes.DEFAULT_TYP
         # Проверяем, есть ли в сообщении фото
         if query.message.photo:
             # Если сообщение содержит фото, редактируем caption
-            await query.edit_message_caption(
-                caption=message_text,
-                parse_mode='HTML'
-            )
+            await query.edit_message_caption(caption=message_text, parse_mode="HTML")
         else:
             # Если обычное текстовое сообщение, редактируем текст
-            await query.edit_message_text(
-                text=message_text,
-                parse_mode='HTML'
-            )
+            await query.edit_message_text(text=message_text, parse_mode="HTML")
 
         return CHATTING_WITH_PERSONALITY
 
@@ -132,24 +128,30 @@ async def personality_selected(update: Update, context: ContextTypes.DEFAULT_TYP
         try:
             # Пытаемся отправить сообщение об ошибке правильным способом
             if query.message.photo:
-                await query.edit_message_caption("😔 Произошла ошибка. Попробуйте еще раз.")
+                await query.edit_message_caption(
+                    "😔 Произошла ошибка. Попробуйте еще раз."
+                )
             else:
-                await query.edit_message_text("😔 Произошла ошибка. Попробуйте еще раз.")
+                await query.edit_message_text(
+                    "😔 Произошла ошибка. Попробуйте еще раз."
+                )
         except Exception:
             # Если и это не работает, отправляем новое сообщение
             await context.bot.send_message(
                 chat_id=query.message.chat_id,
-                text="😔 Произошла ошибка. Попробуйте еще раз."
+                text="😔 Произошла ошибка. Попробуйте еще раз.",
             )
         return -1
 
 
-async def handle_personality_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def handle_personality_message(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
     """Обработка сообщения для личности"""
     try:
         user_message = update.message.text
-        personality_key = context.user_data.get('current_personality')
-        personality_data = context.user_data.get('personality_data')
+        personality_key = context.user_data.get("current_personality")
+        personality_data = context.user_data.get("personality_data")
 
         if not personality_key or not personality_data:
             await update.message.reply_text(
@@ -158,7 +160,9 @@ async def handle_personality_message(update: Update, context: ContextTypes.DEFAU
             return -1
 
         # Показываем индикатор "печатает"
-        await context.bot.send_chat_action(chat_id=update.effective_chat.id, action="typing")
+        await context.bot.send_chat_action(
+            chat_id=update.effective_chat.id, action="typing"
+        )
 
         # Отправляем сообщение о том, что обрабатываем запрос
         processing_msg = await update.message.reply_text(
@@ -166,13 +170,23 @@ async def handle_personality_message(update: Update, context: ContextTypes.DEFAU
         )
 
         # Получаем ответ от ChatGPT в роли выбранной личности
-        personality_response = await get_personality_response(user_message, personality_data['prompt'])
+        personality_response = await get_personality_response(
+            user_message, personality_data["prompt"]
+        )
 
         # Создаем кнопки
         keyboard = [
-            [InlineKeyboardButton("💬 Продолжить диалог", callback_data="continue_chat")],
-            [InlineKeyboardButton("👥 Выбрать другую личность", callback_data="change_personality")],
-            [InlineKeyboardButton("🏠 Закончить", callback_data="finish_talk")]
+            [
+                InlineKeyboardButton(
+                    "💬 Продолжить диалог", callback_data="continue_chat"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "👥 Выбрать другую личность", callback_data="change_personality"
+                )
+            ],
+            [InlineKeyboardButton("🏠 Закончить", callback_data="finish_talk")],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -180,8 +194,8 @@ async def handle_personality_message(update: Update, context: ContextTypes.DEFAU
         await processing_msg.delete()
         await update.message.reply_text(
             f"{personality_data['emoji']} <b>{personality_data['name']} отвечает:</b>\n\n{personality_response}",
-            parse_mode='HTML',
-            reply_markup=reply_markup
+            parse_mode="HTML",
+            reply_markup=reply_markup,
         )
 
         return CHATTING_WITH_PERSONALITY
@@ -194,18 +208,20 @@ async def handle_personality_message(update: Update, context: ContextTypes.DEFAU
         return CHATTING_WITH_PERSONALITY
 
 
-async def handle_personality_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def handle_personality_callback(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
     """Обработка кнопок в диалоге с личностью"""
     query = update.callback_query
     await query.answer()
 
     if query.data == "continue_chat":
-        personality_data = context.user_data.get('personality_data')
+        personality_data = context.user_data.get("personality_data")
         if personality_data:
             await query.edit_message_text(
                 f"{personality_data['emoji']} <b>Продолжаем диалог с {personality_data['name']}</b>\n\n"
                 "💬 Напишите ваше следующее сообщение:",
-                parse_mode='HTML'
+                parse_mode="HTML",
             )
             return CHATTING_WITH_PERSONALITY
 
@@ -214,8 +230,8 @@ async def handle_personality_callback(update: Update, context: ContextTypes.DEFA
 
     elif query.data == "finish_talk":
         # Очищаем данные о личности
-        context.user_data.pop('current_personality', None)
-        context.user_data.pop('personality_data', None)
+        context.user_data.pop("current_personality", None)
+        context.user_data.pop("personality_data", None)
 
         return -1
 

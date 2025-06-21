@@ -1,3 +1,5 @@
+"""Задаем произвольные вопросы чату GPT."""
+
 import logging
 import os
 
