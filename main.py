@@ -33,6 +33,10 @@ def main():
         )
         application.add_handler(CommandHandler("quiz", quiz.quiz_command))
 
+        gpt_conversation
+        personality_conversation
+        quiz_conversation
+
         """Обработчики бесед"""
         application.add_handler(quiz_conversation)
         application.add_handler(personality_conversation)
