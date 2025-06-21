@@ -1,7 +1,8 @@
 import logging
 import os
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputFile, Update
+from telegram import (InlineKeyboardButton, InlineKeyboardMarkup, InputFile,
+                      Update)
 from telegram.ext import ContextTypes
 
 from services.openai_client import get_chatgpt_response
