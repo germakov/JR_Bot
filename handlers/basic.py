@@ -1,8 +1,10 @@
 """Файл с основными хендлерами бота."""
-import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes
+
 import asyncio
+import logging
+
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import ContextTypes
 
 logger = logging.getLogger(__name__)
 
@@ -28,9 +30,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     if update.message:
-        await update.message.reply_text(welcome_text, parse_mode='HTML', reply_markup=reply_markup)
+        await update.message.reply_text(
+            welcome_text,
+            parse_mode="HTML",
+            reply_markup=reply_markup,
+        )
     elif update.callback_query:
-        await update.callback_query.edit_message_text(welcome_text, parse_mode='HTML', reply_markup=reply_markup)
+        await update.callback_query.edit_message_text(
+            welcome_text,
+            parse_mode="HTML",
+            reply_markup=reply_markup,
+        )
 
 
 async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -52,6 +62,6 @@ async def start_menu_again(query):
     await query.edit_message_text(
         "🎉 <b>Добро пожаловать в ChatGPT бота!</b>\n\n"
         "Выберите одну из доступных функций:",
-        parse_mode='HTML',
-        reply_markup=reply_markup
+        parse_mode="HTML",
+        reply_markup=reply_markup,
     )
